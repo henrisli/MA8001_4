@@ -64,8 +64,7 @@ for (j in iter){
   }
 }
 
-mat = matrix(rnorm(n^2), ncol=n)
-cmat = x[[1]]
+cmat = x[[51]]
 rownames(cmat) = paste("trial", seq(B), sep="")
 colnames(cmat) = paste("time", seq(n), sep="")
 
@@ -75,10 +74,10 @@ mdat = melt(dat, id.vars="trial")
 mdat$time = as.numeric(gsub("time", "", mdat$variable))
 
 
-p = ggplot(mdat, aes(x=time, y=value, group=trial)) +
+p = ggplot(mdat, aes(x=time, y=value, group=trial, col = trial)) +
   theme_bw() +
   theme(panel.grid=element_blank()) +
-  geom_line()
+  geom_line()+ theme(legend.position = "none")+ xlab("i") + ylab("x")
 p
 
 
