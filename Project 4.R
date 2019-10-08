@@ -1,7 +1,5 @@
 library(data.table)
-library(viridis)
 library(reshape2)
-library(geoR)
 library(ggplot2)
 library(MASS)
 library(cowplot)
@@ -9,8 +7,7 @@ library(fields)
 library(gtable)
 library(ggpubr)
 library(gridExtra)
-library(akima)
-library(party)
+
 
 n = 100
 B = 200
@@ -51,12 +48,12 @@ for (j in iter){
     t_t[b,j] = t_asim(x[[k]][b,], j)
   }
   t_t[,j] = t_t[,j] + epsilon_j[j]
-  sigma_t_j[j] = 1/B*sum((t_t[,j] - mean(t_t[,j]))^2)
+  sigma_t_j[j] = sum((t_t[,j] - mean(t_t[,j]))^2)
   sigma_x_t_j[j,] = rep(0, n)
   for (b in 1:B){
     sigma_x_t_j[j,] = sigma_x_t_j[j,] + (x[[k]][b,] - mean(x[[k]][b,]))*(t_t[b,j]-mean(t_t[,j]))
   }
-  sigma_x_t_j[j,] = sigma_x_t_j[j,]/B
+  sigma_x_t_j[j,] = sigma_x_t_j[j,]
   K[j, ] = sigma_x_t_j[j,]/sigma_t_j[j]
   x[[k+1]] = matrix(NA, ncol = 100, nrow = B)
   for (b in 1:B){
