@@ -10,7 +10,7 @@ library(gridExtra)
 
 
 n = 100
-B = 200
+B = 400
 t_j = as.vector(as.matrix(read.table("https://folk.ntnu.no/joeid/emnemodul/traveltimedata.txt")))
 
 set.seed(2606)
@@ -35,7 +35,7 @@ sigma_x_t_j = matrix(NA, nrow = 50, ncol = n)
 
 t_t = matrix(NA, ncol = 50, nrow = B)
 K = matrix(NA, ncol = n, nrow = 50)
-epsilon_j = rnorm(50, 0, tau)
+epsilon_j = matrix(rnorm(50*B, 0, tau), ncol = 50)
 
 rev = F
 
@@ -47,11 +47,11 @@ for (j in iter){
   for (b in 1:B){
     t_t[b,j] = t_asim(x[[k]][b,], j)
   }
-  t_t[,j] = t_t[,j] + epsilon_j[j]
+  t_t[,j] = t_t[,j] + epsilon_j[,j]
   sigma_t_j[j] = sum((t_t[,j] - mean(t_t[,j]))^2)
   sigma_x_t_j[j,] = rep(0, n)
   for (b in 1:B){
-    sigma_x_t_j[j,] = sigma_x_t_j[j,] + (x[[k]][b,] - mean(x[[k]][b,]))*(t_t[b,j]-mean(t_t[,j]))
+    sigma_x_t_j[j,] = sigma_x_t_j[j,] + (x[[k]][b,] - mean(x[[k]][,j]))*(t_t[b,j]-mean(t_t[,j]))
   }
   sigma_x_t_j[j,] = sigma_x_t_j[j,]
   K[j, ] = sigma_x_t_j[j,]/sigma_t_j[j]
